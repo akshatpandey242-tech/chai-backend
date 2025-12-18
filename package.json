@@ -1,7 +1,7 @@
 {
   "name": "chai-project",
   "version": "1.0.0",
-  "description": "a backend from  chai aur code channel ",
+  "description": "a backend from chai aur code channel - youtube",
   "keywords": [
     "javascript",
     "backend",
@@ -16,7 +16,7 @@
     "url": "git+https://github.com/akshatpandey242-tech/chai-project.git"
   },
   "license": "ISC",
-  "author": "Akshat Pandey",
+  "author": "",
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
