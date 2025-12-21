@@ -5,7 +5,7 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
 import jwt from "jsonwebtoken"
 
-S
+
 const generateAccessAndRefreshToken = async(userId)=>{
     try{
         const user = await User.findOne(userId)
