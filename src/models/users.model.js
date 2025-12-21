@@ -1,4 +1,5 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose from "mongoose";
+import {Schema} from "mongoose"
 import jwt from "jsonwebtoken";
 //jwt is a bearer token , ye token jiske bhi paas hai , ye usko data bhejdega
 import bcrypt from "bcrypt";
@@ -48,11 +49,9 @@ const userSchema = new Schema({
 
 //ye waale hooks model files me hi likhte hai professionla work mei 
 
-userSchema.pre("save", async function (next) {
-    if (this.isModified("password")){
-        this.password = await bcrypt.hash(this.password, 10)
-    }
-    next()
+userSchema.pre("save", async function () {
+    if (!this.isModified("password")) return ; 
+    this.password = await bcrypt.hash(this.password, 10)
 })   // inn hooks ko app.listen and app.error type methods se relate ke sakte hai
 //explore the functionalities of this hooks from the docs
 
@@ -70,7 +69,7 @@ userSchema.methods.isPasswordCorrect = async function (password){
 }
 
 // neeche dono hi jwt methods hai
-userSchema.methods.generateAccessToken = async function(){
+userSchema.methods.generateAccessToken =  function(){
     return  jwt.sign(
         { /* ye meta payload , ki kya kya rakho  
             //ye mera payload ka key hai */ _id : this._id , // ye mere db se aa rahi hai

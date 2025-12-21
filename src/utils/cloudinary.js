@@ -3,8 +3,7 @@
 import { v2 as cloudinary } from "cloudinary";
 // when to manage file system , use fs , aur isme unlink ka thoda padh lena
 import fs from "fs"
-
-
+import { unlink } from "fs";
 
 const uploadOnCloudinary = async (localFilePath) => {
     try {
@@ -14,11 +13,13 @@ const uploadOnCloudinary = async (localFilePath) => {
             resource_type: "auto"
         })
         //file has been uploaded successfully
-        console.log("file has been uploaded on cloudinary", response.url);
+        // console.log("file has been uploaded on cloudinary", response.url);
+        await fs.promises.unlink(localFilePath)        
         return response;
     } catch (error) {
         if (localFilePath && fs.existsSync(localFilePath)) {
-            await fs.promise.unlink(localFilePath)
+            //await fs.promise.unlink(localFilePath)
+            await fs.promises.unlink(localFilePath)
         }
         // remove the locally saved temporary file as the upload operation has failed
         console.error("Cloudinary upload failed: ", error)
