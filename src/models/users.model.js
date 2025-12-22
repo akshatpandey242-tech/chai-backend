@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import {Schema} from "mongoose"
+import { Schema } from "mongoose"
 import jwt from "jsonwebtoken";
 //jwt is a bearer token , ye token jiske bhi paas hai , ye usko data bhejdega
 import bcrypt from "bcrypt";
@@ -49,9 +49,17 @@ const userSchema = new Schema({
 
 //ye waale hooks model files me hi likhte hai professionla work mei 
 
-userSchema.pre("save", async function () {
-    if (!this.isModified("password")) return ; 
-    this.password = await bcrypt.hash(this.password, 10)
+userSchema.pre("save", function (next) {
+    if (!this.isModified("password")) return next();
+
+    bcrypt.hash(this.password, 10)
+    .then((hashedPassword) => {
+        this.password = hashedPassword;
+        next();
+    }).catch((err)=>{
+        next( new ApiError(500, err.message || "Error in hashing password"))
+    })
+
 })   // inn hooks ko app.listen and app.error type methods se relate ke sakte hai
 //explore the functionalities of this hooks from the docs
 
@@ -64,33 +72,33 @@ userSchema.pre("save", async function () {
 //now like how we are allowed to make custom middleware by mongo  , we can also make custom methods also
 
 //we are making this method to check the normak and encrypted password
-userSchema.methods.isPasswordCorrect = async function (password){
-    return await bcrypt.compare(password , this.password) //boolean
+userSchema.methods.isPasswordCorrect = async function (password) {
+    return await bcrypt.compare(password, this.password) //boolean
 }
 
 // neeche dono hi jwt methods hai
-userSchema.methods.generateAccessToken =  function(){
-    return  jwt.sign(
+userSchema.methods.generateAccessToken = function () {
+    return jwt.sign(
         { /* ye meta payload , ki kya kya rakho  
-            //ye mera payload ka key hai */ _id : this._id , // ye mere db se aa rahi hai
-            email : this.email ,
-            username : this.username ,
-            fullname : this.fullname
+            //ye mera payload ka key hai */ _id: this._id, // ye mere db se aa rahi hai
+            email: this.email,
+            username: this.username,
+            fullname: this.fullname
         },
-        process.env.ACCESS_TOKEN_SECRET ,
+        process.env.ACCESS_TOKEN_SECRET,
         {
-            expiresIn : process.env.ACCESS_TOKEN_EXPIRY
+            expiresIn: process.env.ACCESS_TOKEN_EXPIRY
         }
     )
 }
-userSchema.methods.generateRefreshToken = function(){
-    return  jwt.sign(
-        {   
-            _id : this._id
-        },
-        process.env.REFRESH_TOKEN_SECRET ,
+userSchema.methods.generateRefreshToken = function () {
+    return jwt.sign(
         {
-            expiresIn : process.env.REFRESH_TOKEN_EXPIRY
+            _id: this._id
+        },
+        process.env.REFRESH_TOKEN_SECRET,
+        {
+            expiresIn: process.env.REFRESH_TOKEN_EXPIRY
         }
     )
 }
