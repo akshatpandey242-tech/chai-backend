@@ -236,7 +236,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     }
 })
 
-const changeCurrentPassowrd = asyncHandler(async (req, res) => {
+const changeCurrentPassword = asyncHandler(async (req, res) => {
     const { currentPassword, newPassword } = req.body
     if (!currentPassword || !newPassword) {
         throw new ApiError(400, "current password and new password are required")
@@ -497,7 +497,7 @@ export {
     loginUser,
     logoutUser,
     refreshAccessToken,
-    changeCurrentPassowrd,
+    changeCurrentPassword,
     getCurrentUser,
     updateAccountDetails,
     updateUserAvatar,
